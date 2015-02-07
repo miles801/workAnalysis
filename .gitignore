@@ -41,3 +41,15 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+
+# =========================
+# java
+# =========================
+
+*.iml
+.idea/**
+target/**
+out/**
+*.class
