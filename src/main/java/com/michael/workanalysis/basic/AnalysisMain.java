@@ -74,7 +74,12 @@ public class AnalysisMain {
                         System.out.println("异常文件：" + file.getName() + ",项目编号:" + projectKey + ",异常行数：" + (i + 1) + ",异常列数：" + (j + 1) + ",值：" + cell.toString() + ",单元格类型：" + cell.getCellType());
                         continue;
                     }
-                    String employeeName = firstRow.getCell(j).toString();
+                    Cell firstRowCell = firstRow.getCell(j);
+                    if (firstRowCell == null) {
+                        logger.warn(String.format("无效的单元格,第一行的单元格不存在!当前行:%d,当前列:%d", (j + 1), (i + 1)));
+                        continue;
+                    }
+                    String employeeName = firstRowCell.toString();
                     ProjectWorkTime projectWorkTime = pool.getProjectWorkTime(projectKey, employeeName);
                     // 如果没有找到，则说明是新增加的，需要添加到池子中
                     if (projectWorkTime == null) {
@@ -110,7 +115,6 @@ public class AnalysisMain {
 
     private List<ProjectWorkTime> sum(final String[] projectKeys) {
         List<ProjectWorkTime> list = Pool.getInstance().getFilterProjectWorkTime(new Filter() {
-            @Override
             public boolean doFilter(ProjectWorkTime projectWorkTime) {
                 for (String key : projectKeys) {
                     if (key.equals(projectWorkTime.getProjectKey())) {
@@ -121,7 +125,6 @@ public class AnalysisMain {
             }
         });
         Collections.sort(list, new Comparator<ProjectWorkTime>() {
-            @Override
             public int compare(ProjectWorkTime o1, ProjectWorkTime o2) {
                 return o1.getEmployeeName().compareTo(o2.getEmployeeName());
             }
